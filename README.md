@@ -131,7 +131,8 @@ Waveforms will show Flip-Flop input, clock, and output.
 
 Verify setup and hold constraints for all random input patterns.
 
-(Insert waveform screenshot here after running simulation in ModelSim)
+<img width="1018" height="546" alt="image" src="https://github.com/user-attachments/assets/38f7cd53-fdbd-4d96-9f28-8db6e5bedba3" />
+
 
 ---
 
