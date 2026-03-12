@@ -80,13 +80,18 @@ In this experiment:
 ### Flip-Flop Design (`flipflop.sv`)
 ```systemverilog
 module flipflop (
-    input  logic D,       // Data input
+    input  logic D,R,       // Data input
     input  logic CLK,     // Clock
     output logic Q        // Flip-Flop output
 );
 
-    // Implement Flip-Flop behavior
-    // Include D flip-flop logic
+always_ff @(posedge CLK) begin
+    if(R)
+      Q <= 0;
+    else
+      Q <= D;
+end
+
 endmodule
 ```
 ### Testbench (`flipflop_tb.sv`)
@@ -94,12 +99,13 @@ endmodule
 module flipflop_tb;
 
     // Declare signals
-    logic D, CLK;
+    logic D, CLK, R;
     logic Q;
 
     // Instantiate Flip-Flop
     flipflop uut (
         .D(D),
+         .R(R),
         .CLK(CLK),
         .Q(Q)
     );
@@ -109,16 +115,25 @@ module flipflop_tb;
         CLK = 0;
         forever #5 CLK = ~CLK; // Clock generation
     end
-
     initial begin
-        // Apply random data to D
-        // Example:
-        // repeat(20) begin
-        //   D = $urandom_range(0,1);
-        //   #10;
-        // end
-        $stop; // End simulation
+        R = 1;          // Apply reset
+        #12 R = 0;      // Release reset after some delay
     end
+
+
+      initial begin
+        D = 0;
+        wait (R == 0);  // Wait until reset is released
+        repeat (30) begin
+            #($urandom_range(1,9));
+            D = $urandom_range(0,1);
+        end
+        #20 $stop;
+     end
+     initial begin
+       $dumpfile("dump.vcd");
+       $dumpvars;
+     end
 
 endmodule
 ```
@@ -127,11 +142,7 @@ endmodule
 
 Simulation is carried out using ModelSim 2020.1.
 
-Waveforms will show Flip-Flop input, clock, and output.
-
-Verify setup and hold constraints for all random input patterns.
-
-<img width="1018" height="546" alt="image" src="https://github.com/user-attachments/assets/38f7cd53-fdbd-4d96-9f28-8db6e5bedba3" />
+<img width="1018" height="546" alt="Screenshot 2026-03-12 120827" src="https://github.com/user-attachments/assets/164dfef0-c51c-467c-933f-b1262067bca3" />
 
 
 ---
